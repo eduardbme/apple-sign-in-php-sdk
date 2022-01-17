@@ -9,8 +9,9 @@ use Azimo\Apple\Auth\Exception;
 use BadMethodCallException;
 use Lcobucci\JWT;
 use OutOfBoundsException;
-use phpseclib3\Crypt\RSA;
-use phpseclib3\Math\BigInteger;
+
+include 'Crypt/RSA.php';
+include 'Math/BigInteger.php';
 
 class JwtVerifier
 {
@@ -82,9 +83,14 @@ class JwtVerifier
 
     private function createPublicKey(JsonWebKeySet $authKey): string
     {
-        return RSA\Formats\Keys\PKCS8::savePublicKey(
-            new BigInteger(base64_decode(strtr($authKey->getModulus(), '-_', '+/')), 256),
-            new BigInteger(base64_decode(strtr($authKey->getExponent(), '-_', '+/')), 256)
+        $method = new \ReflectionMethod(\Crypt_RSA::class, "_convertPublicKey");
+        $method->setAccessible(true);
+
+        $rsa = new \Crypt_RSA();
+
+        return $rsa->_convertPublicKey(
+            new \Math_BigInteger(base64_decode(strtr($authKey->getModulus(), '-_', '+/')), 256),
+            new \Math_BigInteger(base64_decode(strtr($authKey->getExponent(), '-_', '+/')), 256)
         );
     }
 }
