@@ -2,7 +2,6 @@
 
 namespace Azimo\Apple\Api\Response;
 
-use Azimo\Apple\Api\Enum\CryptographicAlgorithmEnum;
 use Azimo\Apple\Api\Exception\UnsupportedCryptographicAlgorithmException;
 
 class JsonWebKeySetCollection
@@ -24,7 +23,6 @@ class JsonWebKeySetCollection
 
     public function getByCryptographicAlgorithm(string $algorithm): ?JsonWebKeySet
     {
-
         $result = $this->authKeys[$algorithm] ?? null;
         if(!$result) {
             throw new UnsupportedCryptographicAlgorithmException(
@@ -34,6 +32,7 @@ class JsonWebKeySetCollection
                 )
             );
         }
+
         return $result;
     }
 }
